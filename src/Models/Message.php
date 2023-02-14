@@ -11,7 +11,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Message extends BaseModel implements MessageContract, HasMedia
 {
-    use PresentableTrait, LogsActivity, InteractsWithMedia ;
+    use PresentableTrait;
+    use LogsActivity;
+    use InteractsWithMedia ;
 
     /**
      *  Model configuration.

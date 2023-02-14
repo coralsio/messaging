@@ -30,7 +30,6 @@ class DiscussionsController extends BaseController
     /**
      * @return mixed
      */
-
     public function allDiscussion(DiscussionRequest $request, DiscussionsDataTable $dataTable)
     {
         if (user()->can('Messaging::discussion.view_all')) {
@@ -46,13 +45,13 @@ class DiscussionsController extends BaseController
 
         $discussions = user()->discussions($status);
 
-        if (!empty($search_term)) {
+        if (! empty($search_term)) {
             $discussions->newQuery();
 
             $config = [
                 'title_weight' => 10,
                 'content_weight' => 10,
-                'enable_wildcards' => 10
+                'enable_wildcards' => 10,
             ];
 
             $search = new Search();
@@ -65,7 +64,6 @@ class DiscussionsController extends BaseController
 
         return view('Messaging::discussions.index')->with(compact('discussions', 'search_term', 'status'));
     }
-
 
     /**
      * @param DiscussionRequest $request
@@ -82,7 +80,7 @@ class DiscussionsController extends BaseController
         }
 
         $this->setViewSharedData([
-            'title_singular' => trans('Corals::labels.create_title', ['title' => $this->title_singular])
+            'title_singular' => trans('Corals::labels.create_title', ['title' => $this->title_singular]),
         ]);
 
         return view('Messaging::discussions.create_edit')->with(compact('discussion', 'user'));
@@ -149,7 +147,6 @@ class DiscussionsController extends BaseController
         return redirectTo($this->resource_url);
     }
 
-
     /**
      * @param DiscussionRequest $request
      * @param Discussion $discussion
@@ -158,7 +155,7 @@ class DiscussionsController extends BaseController
     public function show(DiscussionRequest $request, Discussion $discussion)
     {
         $this->setViewSharedData([
-            'title_singular' => trans('Corals::labels.show_title', ['title' => $discussion->getIdentifier('subject')])
+            'title_singular' => trans('Corals::labels.show_title', ['title' => $discussion->getIdentifier('subject')]),
         ]);
 
         $this->setViewSharedData();
@@ -215,8 +212,10 @@ class DiscussionsController extends BaseController
 
             $message = [
                 'level' => 'success',
-                'message' => trans('Messaging::messages.success.' . $status,
-                    ['item' => \Str::plural($this->title_singular)])
+                'message' => trans(
+                    'Messaging::messages.success.' . $status,
+                    ['item' => \Str::plural($this->title_singular)]
+                ),
             ];
         } catch (\Exception $exception) {
             log_exception($exception, Discussion::class, 'destroy');

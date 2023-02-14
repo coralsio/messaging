@@ -8,11 +8,11 @@ use Corals\Modules\Messaging\Models\Participation;
 use Corals\Modules\Messaging\Providers\MessagingAuthServiceProvider;
 use Corals\Modules\Messaging\Providers\MessagingObserverServiceProvider;
 use Corals\Modules\Messaging\Providers\MessagingRouteServiceProvider;
+use Corals\Settings\Facades\Modules;
 use Corals\Settings\Facades\Settings;
 use Corals\User\Models\User;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
-use Corals\Settings\Facades\Modules;
 
 class MessagingServiceProvider extends ServiceProvider
 {
@@ -23,7 +23,6 @@ class MessagingServiceProvider extends ServiceProvider
      *
      * @return void
      */
-
     public function boot()
     {
         // Load view
@@ -37,7 +36,6 @@ class MessagingServiceProvider extends ServiceProvider
 
         $this->registerCustomFieldsModels();
         $this->registerModulesPackages();
-
     }
 
     /**
@@ -80,6 +78,7 @@ class MessagingServiceProvider extends ServiceProvider
         $this->app->bind(Contracts\Message::class, Message::class);
         $this->app->bind(Contracts\Participation::class, Participation::class);
     }
+
     public function registerModulesPackages()
     {
         Modules::addModulesPackages('corals/messaging');

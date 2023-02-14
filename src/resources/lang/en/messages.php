@@ -1,4 +1,5 @@
 <?php
+
 return [
     'success' => [
         'read' => ':item marked as read successfully',
@@ -9,5 +10,5 @@ return [
     ],
     'discussion' => [
         'search_result' => 'search result for:',
-    ]
+    ],
 ];

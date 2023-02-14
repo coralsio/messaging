@@ -15,8 +15,8 @@ return [
                     'policies_args' => 'read',
                     'data' => [
                         'action' => "post",
-                        'page_action' => 'site_reload'
-                    ]
+                        'page_action' => 'site_reload',
+                    ],
                 ],
                 'unRead' => [
                     'icon' => 'fa fa-fw fa-envelope',
@@ -26,8 +26,8 @@ return [
                     'policies_args' => 'unread',
                     'data' => [
                         'action' => "post",
-                        'page_action' => 'site_reload'
-                    ]
+                        'page_action' => 'site_reload',
+                    ],
                 ],
                 'important' => [
                     'icon' => 'fa fa-fw fa-info-circle',
@@ -37,8 +37,8 @@ return [
                     'policies_args' => 'important',
                     'data' => [
                         'action' => "post",
-                        'page_action' => 'site_reload'
-                    ]
+                        'page_action' => 'site_reload',
+                    ],
                 ],
                 'star' => [
                     'icon' => 'fa fa-fw fa-star',
@@ -48,10 +48,10 @@ return [
                     'policies_args' => 'star',
                     'data' => [
                         'action' => "post",
-                        'page_action' => 'site_reload'
-                    ]
+                        'page_action' => 'site_reload',
+                    ],
                 ],
-            ]
+            ],
         ],
         'message' => [
             'presenter' => \Corals\Modules\Messaging\Transformers\MessagesPresenter::class,
@@ -62,5 +62,5 @@ return [
             'presenter' => \Corals\Modules\Messaging\Transformers\ParticipationPresenter::class,
             'resource_url' => 'messaging/participations',
         ],
-    ]
+    ],
 ];

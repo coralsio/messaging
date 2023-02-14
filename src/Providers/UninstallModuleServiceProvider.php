@@ -9,7 +9,7 @@ use Corals\Modules\Messaging\database\seeds\MessagingDatabaseSeeder;
 class UninstallModuleServiceProvider extends BaseUninstallModuleServiceProvider
 {
     protected $migrations = [
-        MessagingTables::class
+        MessagingTables::class,
     ];
 
     protected function providerBooted()

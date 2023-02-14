@@ -7,7 +7,7 @@ class Messaging
     /**
      * Messaging constructor.
      */
-    function __construct()
+    public function __construct()
     {
     }
 }

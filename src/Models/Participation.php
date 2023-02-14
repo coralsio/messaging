@@ -4,12 +4,13 @@ namespace Corals\Modules\Messaging\Models;
 
 use Corals\Foundation\Models\BaseModel;
 use Corals\Foundation\Transformers\PresentableTrait;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Corals\Modules\Messaging\Contracts\Participation as ParticipationContract;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Participation extends BaseModel implements ParticipationContract
 {
-    use PresentableTrait, LogsActivity;
+    use PresentableTrait;
+    use LogsActivity;
 
     /**
      *  Model configuration.
@@ -32,8 +33,8 @@ class Participation extends BaseModel implements ParticipationContract
      * @var array
      */
     protected $casts = [
-        'id'              => 'integer',
-        'discussion_id'   => 'integer',
+        'id' => 'integer',
+        'discussion_id' => 'integer',
         'participable_id' => 'integer',
     ];
 
@@ -93,7 +94,6 @@ class Participation extends BaseModel implements ParticipationContract
     {
         // TODO: Implement restore() method.
     }
-
 
     public function canBeRead()
     {

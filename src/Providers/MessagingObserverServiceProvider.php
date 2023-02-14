@@ -13,7 +13,6 @@ class MessagingObserverServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
         Discussion::observe(DiscussionObserver::class);
     }
 }

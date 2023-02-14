@@ -14,13 +14,13 @@ $messaging_menu_id = $messaging_menu->id;
         'parent_id' => $messaging_menu_id,
         'key' => null,
         'url' => 'messaging/discussions/all',
-        'active_menu_url' =>  'messaging/discussions*',
+        'active_menu_url' => 'messaging/discussions*',
         'name' => 'All Discussions',
         'description' => 'All Discussions List Menu Item',
         'icon' => 'fa fa-comments-o',
         'target' => null,
         'roles' => '["1"]',
-        'order' => 0
+        'order' => 0,
     ],
 ]);
 
@@ -35,5 +35,3 @@ $messaging_menu_id = $messaging_menu->id;
     ],
 
 ]);
-
-

@@ -3,33 +3,37 @@
 namespace Corals\Modules\Messaging\Policies;
 
 use Corals\Foundation\Policies\BasePolicy;
-use Corals\User\Models\User;
 use Corals\Modules\Messaging\Models\Participation;
+use Corals\User\Models\User;
 
 class ParticipationPolicy extends BasePolicy
 {
     protected $skippedAbilities = [
-        'updateStatus'
+        'updateStatus',
     ];
 
     public function updateStatus(User $user, Participation $participation, $status)
     {
-        if (!$user->can('Messaging::participation.set_status') && !isSuperUser()) {
+        if (! $user->can('Messaging::participation.set_status') && ! isSuperUser()) {
             return false;
         }
 
         switch ($status) {
             case 'read':
                 return $participation->canBeRead();
+
                 break;
             case 'unread':
                 return $participation->canBeUnRead();
+
                 break;
             case 'important':
                 return $participation->canBeImportant();
+
                 break;
             case 'star':
                 return $participation->canBeStar();
+
                 break;
             default:
                 return false;
@@ -45,6 +49,7 @@ class ParticipationPolicy extends BasePolicy
         if ($user->can('Messaging::participation.view')) {
             return true;
         }
+
         return false;
     }
 
@@ -67,6 +72,7 @@ class ParticipationPolicy extends BasePolicy
         if ($user->can('Messaging::participation.update')) {
             return true;
         }
+
         return false;
     }
 
@@ -80,6 +86,7 @@ class ParticipationPolicy extends BasePolicy
         if ($user->can('Messaging::participation.delete')) {
             return true;
         }
+
         return false;
     }
 }

@@ -3,13 +3,13 @@
 namespace Corals\Modules\Messaging\Policies;
 
 use Corals\Foundation\Policies\BasePolicy;
-use Corals\User\Models\User;
 use Corals\Modules\Messaging\Models\Message;
+use Corals\User\Models\User;
 
 class MessagePolicy extends BasePolicy
 {
-
     protected $skippedAbilities = ['create'];
+
     /**
      * @param User $user
      * @return bool
@@ -19,6 +19,7 @@ class MessagePolicy extends BasePolicy
         if ($user->can('Messaging::message.view')) {
             return true;
         }
+
         return false;
     }
 
@@ -41,6 +42,7 @@ class MessagePolicy extends BasePolicy
         if ($user->can('Messaging::message.update')) {
             return true;
         }
+
         return false;
     }
 
@@ -54,7 +56,7 @@ class MessagePolicy extends BasePolicy
         if ($user->can('Messaging::message.delete')) {
             return true;
         }
+
         return false;
     }
-
 }

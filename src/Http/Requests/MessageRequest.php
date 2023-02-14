@@ -34,7 +34,6 @@ class MessageRequest extends BaseRequest
                 'body' => 'required',
                 'files.*' => 'required|mimes:jpg,jpeg,png,rar,zip,txt,pdf,docs,xls,xlsx,doc|max:' . maxUploadFileSize(),
             ]);
-
         }
 
 

@@ -51,7 +51,7 @@ class MessagingTables extends Migration
             $table->timestamp('last_read')->nullable();
             $table->enum('status', ['read', 'unread', 'deleted', 'important', 'star'])->nullable()->default('unread');
             $table->text('properties')->nullable();
-            
+
             $table->unsignedInteger('created_by')->nullable()->index();
             $table->unsignedInteger('updated_by')->nullable()->index();
 

@@ -46,7 +46,6 @@ class DiscussionTransformer extends BaseTransformer
             $participable = $participation->participable;
             if ($participable) {
                 $participations[] = '<img src="' . $participable->picture_thumb . '" width="20" height="20">&nbsp;' . $participable->name;
-
             }
         }
 
@@ -74,7 +73,6 @@ class DiscussionTransformer extends BaseTransformer
 
     public function addIcon($status = null)
     {
-
         $icon = '';
 
         if (is_null($status)) {
@@ -83,13 +81,13 @@ class DiscussionTransformer extends BaseTransformer
 
         if ($status == 'read') {
             $icon = '<i class="fa fa-envelope-open">';
-        } else if ($status == 'unread') {
+        } elseif ($status == 'unread') {
             $icon = '<i class="fa fa-envelope">';
-        } else if ($status == 'important') {
+        } elseif ($status == 'important') {
             $icon = '<i class="fa fa-info-circle">';
-        } else if ($status == 'deleted') {
+        } elseif ($status == 'deleted') {
             $icon = '<i class="fa fa-trash-o">';
-        } else if ($status == 'star') {
+        } elseif ($status == 'star') {
             $icon = '<i class="fa fa-star">';
         }
 

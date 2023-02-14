@@ -5,10 +5,8 @@ namespace Corals\Modules\Messaging\Hooks;
 use Corals\Modules\Messaging\Models;
 use Illuminate\Database\Eloquent\Builder;
 
-
-Class Messagable
+class Messagable
 {
-
     protected $inboxStatuses = ['read', 'unread', 'important', 'star'];
     /* -----------------------------------------------------------------
      |  Relationships
@@ -23,8 +21,6 @@ Class Messagable
         $inboxStatuses = $this->inboxStatuses;
 
         return function ($status = null, $params = []) use ($inboxStatuses) {
-
-
             $morphToMany = $this->morphToMany(
                 Models\Discussion::class,
                 'participable',
@@ -41,7 +37,6 @@ Class Messagable
                 return $morphToMany->getResults();
             } else {
                 return $morphToMany;
-
             }
         };
     }
@@ -53,7 +48,6 @@ Class Messagable
     public function participations()
     {
         return function ($params = []) {
-
             $relation = $this->morphMany(
                 Models\Participation::class,
                 'participable'
@@ -62,7 +56,6 @@ Class Messagable
                 return $relation->getResults();
             } else {
                 return $relation;
-
             }
         };
     }
@@ -82,7 +75,6 @@ Class Messagable
                 return $relation->getResults();
             } else {
                 return $relation;
-
             }
         };
     }
@@ -99,7 +91,6 @@ Class Messagable
     public function newMessagesCount()
     {
         return function ($params = []) {
-
             return $this->discussionsWithNewMessages()->count();
         };
     }
@@ -111,7 +102,6 @@ Class Messagable
     public function discussionsWithNewMessages()
     {
         return function ($params = []) {
-
             $participationsTable = 'messaging_participations';
             $discussionsTable = 'messaging_discussions';
 
@@ -119,11 +109,11 @@ Class Messagable
             return $this->discussions()->where(function (Builder $query) use ($participationsTable, $discussionsTable) {
                 $query->whereNull("$participationsTable.last_read");
                 $query->orWhere(
-                    "$discussionsTable.updated_at", '>', $this->getConnection()->raw("$participationsTable.last_read")
+                    "$discussionsTable.updated_at",
+                    '>',
+                    $this->getConnection()->raw("$participationsTable.last_read")
                 );
             })->get();
         };
     }
-
-
 }

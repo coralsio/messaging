@@ -27,5 +27,5 @@ return [
 
     'participation' => [
         'participation' => 'Participations',
-    ]
+    ],
 ];

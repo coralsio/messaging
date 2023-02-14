@@ -22,11 +22,12 @@ class MessagingMenuDatabaseSeeder extends Seeder
             'description' => 'Messaging Menu Item',
             'icon' => 'fa fa-envelope',
             'target' => null, 'roles' => '["1","2"]',
-            'order' => 0
+            'order' => 0,
         ]);
 
         // seed subscriptions children menu
-        \DB::table('menus')->insert([
+        \DB::table('menus')->insert(
+            [
                 [
                     'parent_id' => $messaging_menu_id,
                     'key' => null,
@@ -36,7 +37,7 @@ class MessagingMenuDatabaseSeeder extends Seeder
                     'description' => 'Discussions List Menu Item',
                     'icon' => 'fa fa-comments',
                     'target' => null, 'roles' => '["1","2"]',
-                    'order' => 0
+                    'order' => 0,
                 ],
                 [
                     'parent_id' => $messaging_menu_id,
@@ -48,8 +49,8 @@ class MessagingMenuDatabaseSeeder extends Seeder
                     'icon' => 'fa fa-comments-o',
                     'target' => null,
                     'roles' => '["1"]',
-                    'order' => 0
-                ]
+                    'order' => 0,
+                ],
             ]
         );
     }

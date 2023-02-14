@@ -19,5 +19,5 @@ return [
             'star' => 'Mark as Star',
         ],
         'files' => 'Files',
-    ]
+    ],
 ];

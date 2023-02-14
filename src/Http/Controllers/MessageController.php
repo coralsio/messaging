@@ -30,7 +30,6 @@ class MessageController extends BaseController
     public function store(MessageRequest $request)
     {
         try {
-
             $data = $request->all();
 
             $messageData = [
@@ -62,11 +61,12 @@ class MessageController extends BaseController
         return redirectTo($discussion_url);
     }
 
-    public function get_message_body(Message $message) {
-
+    public function get_message_body(Message $message)
+    {
         try {
-             $message_id = $message->id;
-;            $body = $message->body;
+            $message_id = $message->id;
+            ;
+            $body = $message->body;
 
             $message = ['message_id' => $message_id, 'body' => $body];
         } catch (\Exception $exception) {
@@ -83,7 +83,6 @@ class MessageController extends BaseController
             $message->delete();
 
             flash(trans('Corals::messages.success.deleted', ['item' => $this->title_singular]))->success();
-
         } catch (\Exception $exception) {
             log_exception($exception, Discussion::class, 'destroy');
             $message = ['level' => 'error', 'message' => $exception->getMessage()];
@@ -93,5 +92,4 @@ class MessageController extends BaseController
 
         return redirectTo($discussion_url);
     }
-
 }

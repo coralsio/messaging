@@ -2,20 +2,20 @@
 
 namespace Corals\Modules\Messaging\Models;
 
-use Corals\Foundation\Models\BaseModel;
+use Carbon\Carbon;
 
+use Corals\Foundation\Models\BaseModel;
 use Corals\Foundation\Search\Indexable;
 use Corals\Foundation\Transformers\PresentableTrait;
 use Corals\Modules\Messaging\Contracts\Discussion as DiscussionContract;
 use Corals\Modules\Messaging\Contracts\Message as MessageContract;
 use Corals\Modules\Messaging\Contracts\Participation as ParticipationContract;
-use Carbon\Carbon;
+use Corals\User\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Corals\User\Models\User;
 
 /**
  * @method \Illuminate\Database\Eloquent\Builder subject(string $subject, bool $strict)
@@ -25,7 +25,9 @@ use Corals\User\Models\User;
  */
 class Discussion extends BaseModel implements DiscussionContract
 {
-    use Indexable, PresentableTrait, LogsActivity;
+    use Indexable;
+    use PresentableTrait;
+    use LogsActivity;
     /**
      *  Model configuration.
      * @var string
@@ -167,7 +169,7 @@ class Discussion extends BaseModel implements DiscussionContract
             $index = 0;
 
             foreach ($participables as $participable) {
-                /** @var  \Illuminate\Database\Eloquent\Model $participable */
+                /** @var \Illuminate\Database\Eloquent\Model $participable */
                 $clause = [
                     ["{$morph}_type", '=', $participable->getMorphClass()],
                     ["{$morph}_id", '=', $participable->getKey()],
@@ -326,8 +328,7 @@ class Discussion extends BaseModel implements DiscussionContract
         $deleted = 0;
 
         foreach ($participables as $participable) {
-
-            /** @var  \Illuminate\Database\Eloquent\Model $participable */
+            /** @var \Illuminate\Database\Eloquent\Model $participable */
             $deleted += $this->participations()
                 ->where("{$morph}_type", '=', $participable->getMorphClass())
                 ->where("{$morph}_id", '=', $participable->getKey())
@@ -335,8 +336,9 @@ class Discussion extends BaseModel implements DiscussionContract
                 ->delete();
         }
 
-        if ($reload)
+        if ($reload) {
             $this->load(['participations']);
+        }
 
         return $deleted;
     }
@@ -412,8 +414,9 @@ class Discussion extends BaseModel implements DiscussionContract
             })
             ->count();
 
-        if ($reload)
+        if ($reload) {
             $this->load(['participations']);
+        }
 
         return $restored;
     }
@@ -451,11 +454,11 @@ class Discussion extends BaseModel implements DiscussionContract
     public function hasParticipation(EloquentModel $participable)
     {
         $morph = 'participable';
+
         return $this->participations()
                 ->where("{$morph}_id", '=', $participable->getKey())
                 ->where("{$morph}_type", '=', $participable->getMorphClass())
                 ->count();
-
     }
 
     /**
@@ -469,8 +472,9 @@ class Discussion extends BaseModel implements DiscussionContract
     {
         $participation = $this->getParticipationByParticipable($participable);
 
-        if (is_null($participation))
-            return new Collection;
+        if (is_null($participation)) {
+            return new Collection();
+        }
 
         return is_null($participation->last_read)
             ? $this->messages->toBase()
@@ -488,5 +492,4 @@ class Discussion extends BaseModel implements DiscussionContract
             ->where("participable_id", '=', $user->getKey())
             ->update(['messaging_participations.status' => $status]);
     }
-
 }

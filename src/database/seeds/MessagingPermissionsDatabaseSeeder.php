@@ -112,7 +112,6 @@ class MessagingPermissionsDatabaseSeeder extends Seeder
         $member_role = Role::where('name', 'member')->first();
 
         if ($member_role) {
-
             $member_role->forgetCachedPermissions();
 
             $member_role->givePermissionTo('Messaging::discussion.view');
@@ -126,8 +125,6 @@ class MessagingPermissionsDatabaseSeeder extends Seeder
             $member_role->givePermissionTo('Messaging::message.delete');
 
             $member_role->givePermissionTo('Messaging::participation.set_status');
-
-
         }
     }
 }

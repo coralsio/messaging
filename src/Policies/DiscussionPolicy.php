@@ -3,8 +3,8 @@
 namespace Corals\Modules\Messaging\Policies;
 
 use Corals\Foundation\Policies\BasePolicy;
-use Corals\User\Models\User;
 use Corals\Modules\Messaging\Models\Discussion;
+use Corals\User\Models\User;
 
 class DiscussionPolicy extends BasePolicy
 {
@@ -17,6 +17,7 @@ class DiscussionPolicy extends BasePolicy
         if ($user->can('Messaging::discussion.view')) {
             return true;
         }
+
         return false;
     }
 
@@ -39,6 +40,7 @@ class DiscussionPolicy extends BasePolicy
         if ($user->can('Messaging::discussion.update')) {
             return true;
         }
+
         return false;
     }
 
@@ -52,6 +54,7 @@ class DiscussionPolicy extends BasePolicy
         if ($user->can('Messaging::discussion.delete')) {
             return true;
         }
+
         return false;
     }
 
@@ -60,6 +63,7 @@ class DiscussionPolicy extends BasePolicy
         if ($user->can('Messaging::discussion.view_all')) {
             return true;
         }
+
         return false;
     }
 
@@ -68,6 +72,7 @@ class DiscussionPolicy extends BasePolicy
         if ($user->can('Messaging::discussion.select_recipient')) {
             return true;
         }
+
         return false;
     }
 }

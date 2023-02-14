@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use Corals\Modules\Messaging\Models\Discussion;
 use Corals\Modules\Messaging\Models\Message;
 use Corals\Modules\Messaging\Models\Participation;
-use Corals\Modules\Referral\Models\Messaging;
 use Corals\User\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +19,6 @@ class MessagingTest extends TestCase
     protected $message;
     protected $discussion;
     protected $participation;
-
 
     protected function setUp(): void
     {
@@ -83,8 +81,10 @@ class MessagingTest extends TestCase
         ];
 
         if ($discussion) {
-            $this->message = Message::query()->where('participable_id',
-                $this->messageRequest['participable_id'])->first();
+            $this->message = Message::query()->where(
+                'participable_id',
+                $this->messageRequest['participable_id']
+            )->first();
 
             $message = $this->assertDatabaseHas('messaging_messages', [
                 'participable_type' => $this->message->participable_type,
@@ -93,8 +93,10 @@ class MessagingTest extends TestCase
                 'discussion_id' => $this->message->discussion_id,
             ]);
 
-            $this->participation = Participation::query()->where('participable_id',
-                $this->messageRequest['participable_id'])->first();
+            $this->participation = Participation::query()->where(
+                'participable_id',
+                $this->messageRequest['participable_id']
+            )->first();
 
             $this->assertDatabaseHas('messaging_participations', [
                 'discussion_id' => $message->participation->discussion_id,
