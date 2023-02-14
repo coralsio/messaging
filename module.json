@@ -1,0 +1,15 @@
+{
+    "code": "corals-messaging",
+    "name": "Messaging",
+    "author": "Corals",
+    "type": "module",
+    "description": "Messaging",
+    "namespace": "Corals\\Modules\\Messaging",
+    "provider": "MessagingServiceProvider",
+    "version": "4.0",
+    "load_order": "0",
+    "folder": "corals-messaging",
+    "icon": "fa fa-comment",
+    "require": {
+    }
+}
