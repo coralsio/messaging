@@ -2,6 +2,7 @@
 
 namespace Corals\Modules\Messaging;
 
+use Corals\Foundation\Providers\BasePackageServiceProvider;
 use Corals\Modules\Messaging\Models\Discussion;
 use Corals\Modules\Messaging\Models\Message;
 use Corals\Modules\Messaging\Models\Participation;
@@ -12,28 +13,20 @@ use Corals\Settings\Facades\Modules;
 use Corals\Settings\Facades\Settings;
 use Corals\User\Models\User;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Support\ServiceProvider;
-use Corals\Settings\Models\Module;
 
-
-class MessagingServiceProvider extends ServiceProvider
+class MessagingServiceProvider extends BasePackageServiceProvider
 {
     protected $defer = true;
+
+    protected $packageCode = 'corals-messaging';
 
     /**
      * Bootstrap the application events.
      *
      * @return void
      */
-
-    public function boot()
+    public function bootPackage()
     {
-        $this->registerModulesPackages();
-        if (!\DB::table('modules')->where('code', 'corals-messaging')
-            ->where('installed', true)
-            ->exists()) {
-            return;
-        };
         // Load view
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'Messaging');
 
@@ -44,20 +37,13 @@ class MessagingServiceProvider extends ServiceProvider
 //        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
 
         $this->registerCustomFieldsModels();
-
     }
 
     /**
      * @throws \ReflectionException
      */
-    public function register()
+    public function registerPackage()
     {
-        if (!\DB::table('modules')->where('code', 'corals-messaging')
-            ->where('installed', true)
-            ->exists()) {
-            return;
-        };
-
         $this->mergeConfigFrom(__DIR__ . '/config/messaging.php', 'messaging');
 
         $this->app->register(MessagingRouteServiceProvider::class);
