@@ -29,7 +29,6 @@ class MessagingServiceProvider extends BasePackageServiceProvider
      * @return void
      */
     public function bootPackage()
-    public function boot()
     {
         // Load view
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'Messaging');
