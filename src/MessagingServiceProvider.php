@@ -21,8 +21,6 @@ class MessagingServiceProvider extends BasePackageServiceProvider
 {
     protected $defer = true;
 
-    protected $packageCode = 'corals-messaging';
-
     /**
      * Bootstrap the application events.
      *
