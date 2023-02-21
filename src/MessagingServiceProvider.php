@@ -13,6 +13,8 @@ use Corals\Settings\Facades\Settings;
 use Corals\User\Models\User;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
+use Corals\Settings\Models\Module;
+
 
 class MessagingServiceProvider extends ServiceProvider
 {
@@ -23,8 +25,15 @@ class MessagingServiceProvider extends ServiceProvider
      *
      * @return void
      */
+
     public function boot()
     {
+        $this->registerModulesPackages();
+        if (!\DB::table('modules')->where('code', 'corals-messaging')
+            ->where('installed', true)
+            ->exists()) {
+            return;
+        };
         // Load view
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'Messaging');
 
@@ -35,7 +44,7 @@ class MessagingServiceProvider extends ServiceProvider
 //        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
 
         $this->registerCustomFieldsModels();
-        $this->registerModulesPackages();
+
     }
 
     /**
@@ -43,6 +52,12 @@ class MessagingServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        if (!\DB::table('modules')->where('code', 'corals-messaging')
+            ->where('installed', true)
+            ->exists()) {
+            return;
+        };
+
         $this->mergeConfigFrom(__DIR__ . '/config/messaging.php', 'messaging');
 
         $this->app->register(MessagingRouteServiceProvider::class);
