@@ -13,9 +13,6 @@ use Corals\Settings\Facades\Modules;
 use Corals\Settings\Facades\Settings;
 use Corals\User\Models\User;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Support\ServiceProvider;
-use Corals\Settings\Models\Module;
-
 
 class MessagingServiceProvider extends BasePackageServiceProvider
 {
