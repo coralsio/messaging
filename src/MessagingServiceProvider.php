@@ -16,7 +16,14 @@ use Illuminate\Foundation\AliasLoader;
 
 class MessagingServiceProvider extends BasePackageServiceProvider
 {
+    /**
+     * @var
+     */
     protected $defer = true;
+    /**
+     * @var
+     */
+    protected $packageCode = 'corals-messaging';
 
     /**
      * Bootstrap the application events.
