@@ -39,7 +39,7 @@ class MessagingServiceProvider extends BasePackageServiceProvider
         $this->loadTranslationsFrom(__DIR__ . '/resources/lang', 'Messaging');
 
         // Load migrations
-//        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
+        //        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
 
         $this->registerCustomFieldsModels();
     }
