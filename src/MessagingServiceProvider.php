@@ -49,6 +49,7 @@ class MessagingServiceProvider extends BasePackageServiceProvider
      */
     public function registerPackage()
     {
+        logger(__DIR__ . '/config/messaging.php', 'messaging');
         $this->mergeConfigFrom(__DIR__ . '/config/messaging.php', 'messaging');
 
         $this->app->register(MessagingRouteServiceProvider::class);
