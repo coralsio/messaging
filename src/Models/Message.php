@@ -4,6 +4,7 @@ namespace Corals\Modules\Messaging\Models;
 
 use Corals\Foundation\Models\BaseModel;
 use Corals\Foundation\Transformers\PresentableTrait;
+use Corals\Modules\HireSkills\Events\MessageReceived;
 use Corals\Modules\Messaging\Contracts\Message as MessageContract;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\HasMedia;
@@ -13,7 +14,7 @@ class Message extends BaseModel implements MessageContract, HasMedia
 {
     use PresentableTrait;
     use LogsActivity;
-    use InteractsWithMedia ;
+    use InteractsWithMedia;
 
     /**
      *  Model configuration.
@@ -21,7 +22,9 @@ class Message extends BaseModel implements MessageContract, HasMedia
      */
     public $config = 'messaging.models.message';
 
-    protected $fillable = ['discussion_id', 'participable_type', 'participable_id', 'body'];
+    protected $fillable = ['discussion_id', 'participable_type', 'participable_id', 'body', 'status'];
+
+    protected $with = ['participable'];
 
     /**
      * The relationships that should be touched on save.
@@ -144,5 +147,22 @@ class Message extends BaseModel implements MessageContract, HasMedia
             return $participant->getAttribute("{$morph}_id") === $this->getAttribute("{$morph}_id")
                 && $participant->getAttribute("{$morph}_type") === $this->getAttribute("{$morph}_type");
         });
+    }
+
+    /**
+     * @param null $collection
+     * @return array|mixed|string[]
+     */
+    public function allowedMediaCollections($collection = null)
+    {
+        $collections = [
+            $this->mediaCollectionName => 'many',
+        ];
+
+        if ($collection) {
+            return data_get($collections, $collection);
+        }
+
+        return $collections;
     }
 }
