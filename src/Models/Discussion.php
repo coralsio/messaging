@@ -13,6 +13,7 @@ use Corals\Modules\Messaging\Contracts\Participation as ParticipationContract;
 use Corals\User\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -28,6 +29,8 @@ class Discussion extends BaseModel implements DiscussionContract
     use Indexable;
     use PresentableTrait;
     use LogsActivity;
+    use SoftDeletes;
+
     /**
      *  Model configuration.
      * @var string
@@ -72,6 +75,18 @@ class Discussion extends BaseModel implements DiscussionContract
             ->first();
     }
 
+    public function getReceiverParticipations($user = null)
+    {
+        if (is_null($user)) {
+            $user = user();
+        }
+
+        return $this->hasMany(Participation::class)
+            ->where("participable_type", '=', $user->getMorphClass())
+            ->where("participable_id", '<>', $user->getKey())
+            ->get();
+    }
+
     /**
      * Messages relationship.
      *
@@ -100,8 +115,8 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Scope discussions that the participable is associated with.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
-     * @param  \Illuminate\Database\Eloquent\Model $participable
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Model $participable
      *
      * @return \Illuminate\Database\Eloquent\Builder|static
      */
@@ -122,7 +137,7 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Scope discussions to load participations relationship.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
      *
      * @return \Illuminate\Database\Eloquent\Builder|static
      */
@@ -134,8 +149,8 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Scope discussions with new messages that the participable is associated with.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
-     * @param  \Illuminate\Database\Eloquent\Model $participable
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Model $participable
      *
      * @return \Illuminate\Database\Eloquent\Builder|static
      */
@@ -157,8 +172,8 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Scope discussions between given participables.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
-     * @param  \Illuminate\Support\Collection|array $participables
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Support\Collection|array $participables
      *
      * @return \Illuminate\Database\Eloquent\Builder|static
      */
@@ -188,9 +203,9 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Scope the query by the subject.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
-     * @param  string $subject
-     * @param  bool $strict
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $subject
+     * @param bool $strict
      *
      * @return \Illuminate\Database\Eloquent\Builder|static
      */
@@ -241,8 +256,8 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Returns all discussions by subject.
      *
-     * @param  string $subject
-     * @param  bool $strict
+     * @param string $subject
+     * @param bool $strict
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -271,7 +286,7 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Add a participable to discussion.
      *
-     * @param  \Illuminate\Database\Eloquent\Model $participable
+     * @param \Illuminate\Database\Eloquent\Model $participable
      *
      */
     public function addParticipant(EloquentModel $participable)
@@ -288,7 +303,7 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Add many participables to discussion.
      *
-     * @param  \Illuminate\Support\Collection|array $participables
+     * @param \Illuminate\Support\Collection|array $participables
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -304,8 +319,8 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Remove a participable from discussion.
      *
-     * @param  \Illuminate\Database\Eloquent\Model $participable
-     * @param  bool $reload
+     * @param \Illuminate\Database\Eloquent\Model $participable
+     * @param bool $reload
      *
      * @return int
      */
@@ -317,8 +332,8 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Remove many participables from discussion.
      *
-     * @param  \Illuminate\Support\Collection|array $participables
-     * @param  bool $reload
+     * @param \Illuminate\Support\Collection|array $participables
+     * @param bool $reload
      *
      * @return int
      */
@@ -346,7 +361,7 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Mark a discussion as read for a participable.
      *
-     * @param  \Illuminate\Database\Eloquent\Model $participable
+     * @param \Illuminate\Database\Eloquent\Model $participable
      *
      * @return bool|int
      */
@@ -362,7 +377,7 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * See if the current thread is unread by the participable.
      *
-     * @param  \Illuminate\Database\Eloquent\Model $participable
+     * @param \Illuminate\Database\Eloquent\Model $participable
      *
      * @return bool
      */
@@ -376,7 +391,7 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Finds the participant record from a participable model.
      *
-     * @param  \Illuminate\Database\Eloquent\Model $participable
+     * @param \Illuminate\Database\Eloquent\Model $participable
      *
      */
     public function getParticipationByParticipable(EloquentModel $participable)
@@ -402,7 +417,7 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Restores all participations within a discussion.
      *
-     * @param  bool $reload
+     * @param bool $reload
      *
      * @return int
      */
@@ -424,8 +439,8 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Generates a participant information as a string.
      *
-     * @param  \Closure|null $callback
-     * @param  string $glue
+     * @param \Closure|null $callback
+     * @param string $glue
      *
      * @return string
      */
@@ -447,7 +462,7 @@ class Discussion extends BaseModel implements DiscussionContract
     /**
      * Checks to see if a participable is a current participant of the discussion.
      *
-     * @param  \Illuminate\Database\Eloquent\Model $participable
+     * @param \Illuminate\Database\Eloquent\Model $participable
      *
      * @return bool
      */
@@ -456,15 +471,15 @@ class Discussion extends BaseModel implements DiscussionContract
         $morph = 'participable';
 
         return $this->participations()
-                ->where("{$morph}_id", '=', $participable->getKey())
-                ->where("{$morph}_type", '=', $participable->getMorphClass())
-                ->count();
+            ->where("{$morph}_id", '=', $participable->getKey())
+            ->where("{$morph}_type", '=', $participable->getMorphClass())
+            ->count();
     }
 
     /**
      * Get the unread messages in discussion for a specific participable.
      *
-     * @param  \Illuminate\Database\Eloquent\Model $participable
+     * @param \Illuminate\Database\Eloquent\Model $participable
      *
      * @return \Illuminate\Support\Collection
      */

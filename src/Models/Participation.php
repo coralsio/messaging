@@ -18,14 +18,7 @@ class Participation extends BaseModel implements ParticipationContract
      */
     public $config = 'messaging.models.participation';
 
-    protected $fillable = ['discussion_id', 'participable_type', 'participable_id', 'last_read', 'status'];
-
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = ['last_read'];
+    protected $fillable = ['discussion_id', 'participable_type', 'participable_id', 'last_read', 'status', 'unread_counts'];
 
     /**
      * The attributes that should be cast to native types.
@@ -36,6 +29,8 @@ class Participation extends BaseModel implements ParticipationContract
         'id' => 'integer',
         'discussion_id' => 'integer',
         'participable_id' => 'integer',
+        'unread_counts' => 'integer',
+        'last_read' => 'datetime'
     ];
 
     protected $table = 'messaging_participations';

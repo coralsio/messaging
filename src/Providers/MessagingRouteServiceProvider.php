@@ -38,11 +38,8 @@ class MessagingRouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        //        $this->mapApiRoutes();
-
+        $this->mapApiRoutes();
         $this->mapWebRoutes();
-
-        //
     }
 
     /**
@@ -68,9 +65,9 @@ class MessagingRouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes()
     {
-        Route::prefix('api/' . config('corals.api_version'))
+        Route::prefix('api/' . config('corals.api_version') . '/messaging')
             ->middleware('api')
-            ->namespace($this->namespace)
+            ->namespace($this->namespace . '\API')
             ->group(__DIR__ . '/../routes/api.php');
     }
 }

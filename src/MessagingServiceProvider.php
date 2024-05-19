@@ -7,11 +7,14 @@ use Corals\Modules\Messaging\Models\Discussion;
 use Corals\Modules\Messaging\Models\Message;
 use Corals\Modules\Messaging\Models\Participation;
 use Corals\Modules\Messaging\Providers\MessagingAuthServiceProvider;
+use Corals\Modules\Messaging\Providers\MessagingBroadcastServiceProvider;
+use Corals\Modules\Messaging\Providers\MessagingEventServiceProvider;
 use Corals\Modules\Messaging\Providers\MessagingObserverServiceProvider;
 use Corals\Modules\Messaging\Providers\MessagingRouteServiceProvider;
 use Corals\Settings\Facades\Modules;
 use Corals\Settings\Facades\Settings;
 use Corals\User\Models\User;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
 
 class MessagingServiceProvider extends BasePackageServiceProvider
@@ -42,6 +45,18 @@ class MessagingServiceProvider extends BasePackageServiceProvider
         //        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
 
         $this->registerCustomFieldsModels();
+
+        $this->registerMorphMaps();
+    }
+
+    /**
+     *
+     */
+    protected function registerMorphMaps()
+    {
+        Relation::morphMap([
+            'Message' => Message::class
+        ]);
     }
 
     /**
@@ -50,10 +65,13 @@ class MessagingServiceProvider extends BasePackageServiceProvider
     public function registerPackage()
     {
         $this->mergeConfigFrom(__DIR__ . '/config/messaging.php', 'messaging');
+        $this->mergeConfigFrom(__DIR__ . '/config/reverb.php', 'reverb');
 
         $this->app->register(MessagingRouteServiceProvider::class);
         $this->app->register(MessagingAuthServiceProvider::class);
         $this->app->register(MessagingObserverServiceProvider::class);
+        $this->app->register(MessagingEventServiceProvider::class);
+        $this->app->register(MessagingBroadcastServiceProvider::class);
 
         $this->app->booted(function () {
             $loader = AliasLoader::getInstance();

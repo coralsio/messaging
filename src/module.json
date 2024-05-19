@@ -6,7 +6,7 @@
   "description": "Internal Messaging System",
   "namespace": "Corals\\Modules\\Messaging\\",
   "provider": "MessagingServiceProvider",
-  "version": "3.0",
+  "version": "10.1",
   "load_order": "0",
   "folder": "Messaging",
   "autoload": "psr-4",

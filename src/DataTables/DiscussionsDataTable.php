@@ -3,8 +3,10 @@
 namespace Corals\Modules\Messaging\DataTables;
 
 use Corals\Foundation\DataTables\BaseDataTable;
+use Corals\Modules\Messaging\DataTables\Scopes\DiscussionSearchScope;
 use Corals\Modules\Messaging\Models\Discussion;
 use Corals\Modules\Messaging\Transformers\DiscussionTransformer;
+use Illuminate\Database\Eloquent\Builder;
 use Yajra\DataTables\EloquentDataTable;
 
 class DiscussionsDataTable extends BaseDataTable
@@ -29,9 +31,24 @@ class DiscussionsDataTable extends BaseDataTable
      * @param Discussion $model
      * @return \Illuminate\Database\Eloquent\Builder|static
      */
-    public function query(Discussion $model)
+    public function query(Discussion $model, string $lastMessageCreatedAt = null)
     {
-        return $model->newQuery();
+        $subQueryLastMessage = \Corals\Modules\Messaging\Models\Message::query()
+            ->select('messaging_messages.created_at')
+            ->whereColumn('messaging_discussions.id', 'messaging_messages.discussion_id')
+            ->limit(1)
+            ->orderBy('created_at', 'desc');
+
+        return $model->newQuery()
+            ->select('messaging_discussions.*')
+            ->when($lastMessageCreatedAt, function (Builder $builder, $lastMessageCreatedAt) use ($subQueryLastMessage) {
+                $builder->selectSub($subQueryLastMessage, 'last_message')
+                    ->whereRaw("({$subQueryLastMessage->toSql()}) < ?", [$lastMessageCreatedAt]);
+            })->withCount(['messages' => function (Builder $builder) {
+                $builder->where('status', '<>', 'draft');
+            }])
+            ->when(!isSuperUser(), fn(Builder $q) => $q->forUser(user()))
+            ->orderBy($subQueryLastMessage, 'desc');
     }
 
     /**
@@ -48,6 +65,23 @@ class DiscussionsDataTable extends BaseDataTable
             'participations' => ['title' => trans('Messaging::attributes.discussion.participations')],
             'created_at' => ['title' => trans('Corals::attributes.created_at')],
             'updated_at' => ['title' => trans('Corals::attributes.updated_at')],
+        ];
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getFilters()
+    {
+        return [
+            'search' => [
+                'title' => 'Search',
+                'class' => 'col-md-3',
+                'type' => 'text',
+                'condition' => 'like',
+                'active' => true,
+                'builder' => DiscussionSearchScope::class
+            ]
         ];
     }
 }
