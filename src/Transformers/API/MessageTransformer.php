@@ -39,7 +39,7 @@ class MessageTransformer extends APIBaseTransformer
             'discussion_id' => $message->discussion_id,
             'sender' => (new SimpleUserPresenter)->present($message->participable)['data'],
             'created_at_for_humans' => $message->created_at->diffForHumans(short: true, syntax: true),
-            'formatted_created_at' => format_date($message->created_at, 'h:m a'),
+            'formatted_created_at' => format_date($message->created_at, 'h:i a'),
             'seen' => $seen,
             'media' => $media,
             'created_at' => $message->created_at->toDateTimeString(),
