@@ -12,5 +12,7 @@ Route::get('discussions/un-read-messages', 'DiscussionsController@discussionsCou
 
 Route::post('discussions/{discussion}/delete-conversation', 'DiscussionsController@deleteConversation');
 
-Route::apiResource('messages', 'MessageController')->only('store');
-Route::apiResource('discussions', 'DiscussionsController')->only('index', 'show');
+Route::group(['as'=>'api.'], function(){
+    Route::apiResource('messages', 'MessageController')->only('store');
+    Route::apiResource('discussions', 'DiscussionsController')->only('index', 'show'); 
+});
