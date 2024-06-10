@@ -3,7 +3,6 @@
 namespace Corals\Modules\Messaging\Models;
 
 use Carbon\Carbon;
-
 use Corals\Foundation\Models\BaseModel;
 use Corals\Foundation\Search\Indexable;
 use Corals\Foundation\Transformers\PresentableTrait;
@@ -75,7 +74,12 @@ class Discussion extends BaseModel implements DiscussionContract
             ->first();
     }
 
-    public function getReceiverParticipations($user = null)
+    /**
+     * @param null $user
+     * @param bool $withTrashed
+     * @return mixed
+     */
+    public function getReceiverParticipations($user = null,bool $withTrashed = false)
     {
         if (is_null($user)) {
             $user = user();
@@ -84,6 +88,7 @@ class Discussion extends BaseModel implements DiscussionContract
         return $this->hasMany(Participation::class)
             ->where("participable_type", '=', $user->getMorphClass())
             ->where("participable_id", '<>', $user->getKey())
+            ->when($withTrashed, fn(Builder $builder) => $builder->withTrashed())
             ->get();
     }
 
@@ -94,7 +99,12 @@ class Discussion extends BaseModel implements DiscussionContract
      */
     public function messages()
     {
-        return $this->hasMany(Message::class)->orderBy('messaging_messages.created_at', 'desc');
+        $latest_deleted_message_id = optional($this->getUserParticipation())->latest_deleted_message_id;
+
+        return $this->hasMany(Message::class)
+            ->when($latest_deleted_message_id, function ($q) use ($latest_deleted_message_id) {
+                $q->where('id', '>', $latest_deleted_message_id);
+            })->orderBy('messaging_messages.created_at', 'desc');
     }
 
     /**
@@ -411,7 +421,7 @@ class Discussion extends BaseModel implements DiscussionContract
      */
     public function getTrashedParticipations()
     {
-        return $this->participations()->get();
+        return $this->participations()->withTrashed()->get();
     }
 
     /**

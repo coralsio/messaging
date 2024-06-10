@@ -5,12 +5,14 @@ namespace Corals\Modules\Messaging\Models;
 use Corals\Foundation\Models\BaseModel;
 use Corals\Foundation\Transformers\PresentableTrait;
 use Corals\Modules\Messaging\Contracts\Participation as ParticipationContract;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Participation extends BaseModel implements ParticipationContract
 {
     use PresentableTrait;
     use LogsActivity;
+    use SoftDeletes;
 
     /**
      *  Model configuration.
@@ -18,7 +20,7 @@ class Participation extends BaseModel implements ParticipationContract
      */
     public $config = 'messaging.models.participation';
 
-    protected $fillable = ['discussion_id', 'participable_type', 'participable_id', 'last_read', 'status', 'unread_counts'];
+    protected $fillable = ['discussion_id', 'participable_type', 'participable_id', 'last_read', 'status', 'unread_counts', 'latest_deleted_message_id', 'deleted_at'];
 
     /**
      * The attributes that should be cast to native types.
@@ -30,7 +32,7 @@ class Participation extends BaseModel implements ParticipationContract
         'discussion_id' => 'integer',
         'participable_id' => 'integer',
         'unread_counts' => 'integer',
-        'last_read' => 'datetime'
+        'last_read' => 'datetime',
     ];
 
     protected $table = 'messaging_participations';
@@ -80,15 +82,6 @@ class Participation extends BaseModel implements ParticipationContract
         return $this->participable->getAttribute('name');
     }
 
-    /**
-     * Restore a soft-deleted model instance.
-     *
-     * @return bool|null
-     */
-    public function restore()
-    {
-        // TODO: Implement restore() method.
-    }
 
     public function canBeRead()
     {

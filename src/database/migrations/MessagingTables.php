@@ -53,6 +53,7 @@ class MessagingTables extends Migration
             $table->morphs('participable');
             $table->integer('unread_counts')->default(0);
             $table->timestamp('last_read')->nullable();
+            $table->unsignedInteger('latest_deleted_message_id')->nullable();
             $table->enum('status', ['read', 'unread', 'deleted', 'important', 'star'])->nullable()->default('unread');
             $table->text('properties')->nullable();
 
@@ -61,6 +62,13 @@ class MessagingTables extends Migration
             $table->softDeletes();
 
             $table->timestamps();
+
+
+            $table->foreign('latest_deleted_message_id')
+                ->references('id')
+                ->on('messaging_messages')
+                ->restrictOnDelete()
+                ->cascadeOnUpdate();
         });
     }
 

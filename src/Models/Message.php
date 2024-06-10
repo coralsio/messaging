@@ -113,6 +113,22 @@ class Message extends BaseModel implements MessageContract, HasMedia
         return $this->hasMany(Participation::class, 'discussion_id', 'discussion_id');
     }
 
+    /**
+     * @param null $user
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null
+     */
+    public function userParticipation($user = null)
+    {
+        if (is_null($user)) {
+            $user = user();
+        }
+
+        return $this->participations()
+            ->where("participable_type", '=', $user->getMorphClass())
+            ->where("participable_id", '=', $user->getKey())
+            ->first();
+    }
+
     public function canDeleteMessage($discussion_id = 0)
     {
         $user = user();

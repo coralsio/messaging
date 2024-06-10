@@ -3,16 +3,11 @@
 namespace Corals\Modules\Messaging\Http\Controllers\API;
 
 use Corals\Foundation\Http\Controllers\APIBaseController;
-use Corals\Foundation\Models\BaseModel;
-use Corals\Foundation\Search\Search;
 use Corals\Modules\Messaging\DataTables\DiscussionsDataTable;
 use Corals\Modules\Messaging\Http\Requests\DiscussionRequest;
 use Corals\Modules\Messaging\Models\Discussion;
-use Corals\Modules\Messaging\Models\Message;
 use Corals\Modules\Messaging\Services\DiscussionService;
 use Corals\Modules\Messaging\Transformers\API\DiscussionPresenter;
-use Corals\User\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class DiscussionsController extends APIBaseController
@@ -63,6 +58,32 @@ class DiscussionsController extends APIBaseController
     {
         try {
             return apiResponse($this->discussionService->markAsRead($discussion));
+        } catch (\Exception $e) {
+            return apiExceptionResponse($e);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param Discussion $discussion
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteConversation(Request $request, Discussion $discussion)
+    {
+        try {
+
+            $this->discussionService->deleteConversation($discussion);
+
+            return apiResponse([], trans('Corals::messages.success.deleted', ['item' => 'Discussion']));
+        } catch (\Exception $exception) {
+            return apiExceptionResponse($exception);
+        }
+    }
+
+    public function discussionsCountForUnReadMessages(Request $request)
+    {
+        try {
+            return apiResponse($this->discussionService->discussionsCountForUnReadMessages());
         } catch (\Exception $e) {
             return apiExceptionResponse($e);
         }
