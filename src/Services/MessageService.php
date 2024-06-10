@@ -7,6 +7,7 @@ use Corals\Foundation\Services\BaseServiceClass;
 use Corals\Modules\Messaging\Events\MessageReceived;
 use Corals\Modules\Messaging\Models\Discussion;
 use Corals\Modules\Messaging\Models\Message;
+use Corals\Modules\Messaging\Models\Participation;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -18,11 +19,19 @@ class MessageService extends BaseServiceClass
      */
     public function preStore(Request $request, &$additionalData)
     {
+        $secondParticipationId = $request->get('second_participation_id');
+
         if ($request->filled('discussion_id')) {
+
+            $participation = Participation::query()->where('participable_id', $secondParticipationId)->first();
+
+            if ($participation->status == 'deleted') {
+                $participation->update(['status' => 'unread']);
+            }
+
             return;
         }
 
-        $secondParticipationId = $request->get('second_participation_id');
 
         //check if they have already chatted.
         $discussion = user()->discussions()

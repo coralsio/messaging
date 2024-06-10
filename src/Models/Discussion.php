@@ -3,7 +3,6 @@
 namespace Corals\Modules\Messaging\Models;
 
 use Carbon\Carbon;
-
 use Corals\Foundation\Models\BaseModel;
 use Corals\Foundation\Search\Indexable;
 use Corals\Foundation\Transformers\PresentableTrait;
@@ -94,7 +93,13 @@ class Discussion extends BaseModel implements DiscussionContract
      */
     public function messages()
     {
-        return $this->hasMany(Message::class)->orderBy('messaging_messages.created_at', 'desc');
+        $latest_deleted_message_id = $this->getUserParticipation()->latest_deleted_message_id;
+
+        return $this->hasMany(Message::class)
+            ->when($latest_deleted_message_id, function ($q) use ($latest_deleted_message_id) {
+                $q->where('id', '>', $latest_deleted_message_id);
+
+            })->orderBy('messaging_messages.created_at', 'desc');
     }
 
     /**

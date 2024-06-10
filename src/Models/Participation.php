@@ -18,7 +18,7 @@ class Participation extends BaseModel implements ParticipationContract
      */
     public $config = 'messaging.models.participation';
 
-    protected $fillable = ['discussion_id', 'participable_type', 'participable_id', 'last_read', 'status', 'unread_counts'];
+    protected $fillable = ['discussion_id', 'participable_type', 'participable_id', 'last_read', 'status', 'unread_counts','latest_deleted_message_id'];
 
     /**
      * The attributes that should be cast to native types.

@@ -40,6 +40,10 @@ class DiscussionsDataTable extends BaseDataTable
             ->orderBy('created_at', 'desc');
 
         return $model->newQuery()
+            ->whereHas('participations', function ($query) {
+                $query->where('messaging_participations.status', '!=', 'deleted')
+                    ->where('messaging_participations.participable_id', user()->id);
+            })
             ->select('messaging_discussions.*')
             ->when($lastMessageCreatedAt, function (Builder $builder, $lastMessageCreatedAt) use ($subQueryLastMessage) {
                 $builder->selectSub($subQueryLastMessage, 'last_message')

@@ -5,7 +5,6 @@ namespace Corals\Modules\Messaging\Services;
 
 use Corals\Foundation\Services\BaseServiceClass;
 use Corals\Modules\Messaging\Models\Discussion;
-use Corals\Modules\Messaging\Models\Participation;
 
 class DiscussionService extends BaseServiceClass
 {
@@ -23,5 +22,24 @@ class DiscussionService extends BaseServiceClass
         ]);
 
         return $this->getModelDetails($discussion->fresh());
+    }
+
+    public function deleteConversation(Discussion $discussion)
+    {
+        $lastMessage = $discussion->messages()->first();
+
+        $discussion->getUserParticipation()->update([
+            'status' => 'deleted',
+            'latest_deleted_message_id' => $lastMessage->id
+        ]);
+    }
+
+    public function discussionsForUnReadMessages()
+    {
+        return Discussion::query()
+            ->whereHas('participations', function ($query) {
+                $query->where('messaging_participations.participable_id', user()->id)
+                    ->where('unread_counts', '!=', 0);
+            })->get();
     }
 }
