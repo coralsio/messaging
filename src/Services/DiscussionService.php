@@ -34,12 +34,12 @@ class DiscussionService extends BaseServiceClass
         ]);
     }
 
-    public function discussionsForUnReadMessages()
+    public function discussionsCountForUnReadMessages()
     {
         return Discussion::query()
             ->whereHas('participations', function ($query) {
                 $query->where('messaging_participations.participable_id', user()->id)
                     ->where('unread_counts', '!=', 0);
-            })->get();
+            })->count();
     }
 }

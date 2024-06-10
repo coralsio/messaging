@@ -80,10 +80,10 @@ class DiscussionsController extends APIBaseController
         }
     }
 
-    public function discussionsForUnReadMessages(Request $request)
+    public function discussionsCountForUnReadMessages(Request $request)
     {
         try {
-            return apiResponse($this->discussionService->discussionsForUnReadMessages());
+            return apiResponse($this->discussionService->discussionsCountForUnReadMessages());
         } catch (\Exception $e) {
             return apiExceptionResponse($e);
         }

@@ -93,7 +93,7 @@ class Discussion extends BaseModel implements DiscussionContract
      */
     public function messages()
     {
-        $latest_deleted_message_id = $this->getUserParticipation()->latest_deleted_message_id;
+        $latest_deleted_message_id = optional($this->getUserParticipation())->latest_deleted_message_id;
 
         return $this->hasMany(Message::class)
             ->when($latest_deleted_message_id, function ($q) use ($latest_deleted_message_id) {
