@@ -7,9 +7,10 @@ use Corals\Foundation\Services\BaseServiceClass;
 use Corals\Modules\Messaging\Events\MessageReceived;
 use Corals\Modules\Messaging\Models\Discussion;
 use Corals\Modules\Messaging\Models\Message;
-use Corals\Modules\Messaging\Models\Participation;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class MessageService extends BaseServiceClass
 {
@@ -22,12 +23,9 @@ class MessageService extends BaseServiceClass
         $secondParticipationId = $request->get('second_participation_id');
 
         if ($request->filled('discussion_id')) {
-
-            $participation = Participation::query()->where('participable_id', $secondParticipationId)->first();
-
-            if ($participation->status == 'deleted') {
-                $participation->update(['status' => 'unread']);
-            }
+            $discussion = tap(
+                Discussion::find($request->get('discussion_id'))
+            )->restoreAllParticipations();
 
             return;
         }
@@ -36,11 +34,14 @@ class MessageService extends BaseServiceClass
         //check if they have already chatted.
         $discussion = user()->discussions()
             ->whereHas(
-                'participations', fn($q) => $q->where('messaging_participations.participable_id', $secondParticipationId)
+                'participations', fn($q) => $q->withTrashed()
+                ->where('messaging_participations.participable_id', $secondParticipationId)
             )->select('messaging_discussions.id')
             ->first();
 
         if ($discussion) {
+            // check if the discussion is already deleted, we need to restore it.
+            $discussion->restoreAllParticipations();
             $additionalData['discussion_id'] = $discussion->id;
             return;
         }
@@ -78,7 +79,12 @@ class MessageService extends BaseServiceClass
             ->orderBy('created_at', 'desc')
             ->with(['participations', 'media'])
             ->where('discussion_id', $message->discussion_id)
-            ->where('id', '<', $message->id)
+            ->where(function (Builder $q) use ($message) {
+                $q->where('id', '<', $message->id)
+                    ->when($message->userParticipation()->latest_deleted_message_id, function (Builder $q, $lastDeletedMsgId) {
+                        $q->where('id', '>', $lastDeletedMsgId);
+                    });
+            })
             ->paginate();
 
         return $this->getPresenter()->present($messages);

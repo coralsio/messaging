@@ -24,22 +24,27 @@ class DiscussionService extends BaseServiceClass
         return $this->getModelDetails($discussion->fresh());
     }
 
+    /**
+     * @param Discussion $discussion
+     */
     public function deleteConversation(Discussion $discussion)
     {
         $lastMessage = $discussion->messages()->first();
 
         $discussion->getUserParticipation()->update([
-            'status' => 'deleted',
+            'deleted_at' => now(),
             'latest_deleted_message_id' => $lastMessage->id
         ]);
     }
 
+    /**
+     * @return int
+     */
     public function discussionsCountForUnReadMessages()
     {
         return Discussion::query()
-            ->whereHas('participations', function ($query) {
-                $query->where('messaging_participations.participable_id', user()->id)
-                    ->where('unread_counts', '!=', 0);
-            })->count();
+            ->forUser(user())
+            ->where('messaging_participations.unread_counts', '>', 0)
+            ->count();
     }
 }

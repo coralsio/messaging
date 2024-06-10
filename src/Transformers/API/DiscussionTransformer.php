@@ -22,7 +22,7 @@ class DiscussionTransformer extends APIBaseTransformer
     {
         $participables = new Collection;
 
-        foreach ($discussion->getReceiverParticipations(user()) as $participations) {
+        foreach ($discussion->getReceiverParticipations(user(), true) as $participations) {
             $participables->push($participations->participable);
         }
 

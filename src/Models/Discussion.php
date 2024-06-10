@@ -74,7 +74,12 @@ class Discussion extends BaseModel implements DiscussionContract
             ->first();
     }
 
-    public function getReceiverParticipations($user = null)
+    /**
+     * @param null $user
+     * @param bool $withTrashed
+     * @return mixed
+     */
+    public function getReceiverParticipations($user = null,bool $withTrashed = false)
     {
         if (is_null($user)) {
             $user = user();
@@ -83,6 +88,7 @@ class Discussion extends BaseModel implements DiscussionContract
         return $this->hasMany(Participation::class)
             ->where("participable_type", '=', $user->getMorphClass())
             ->where("participable_id", '<>', $user->getKey())
+            ->when($withTrashed, fn(Builder $builder) => $builder->withTrashed())
             ->get();
     }
 
@@ -98,7 +104,6 @@ class Discussion extends BaseModel implements DiscussionContract
         return $this->hasMany(Message::class)
             ->when($latest_deleted_message_id, function ($q) use ($latest_deleted_message_id) {
                 $q->where('id', '>', $latest_deleted_message_id);
-
             })->orderBy('messaging_messages.created_at', 'desc');
     }
 
@@ -416,7 +421,7 @@ class Discussion extends BaseModel implements DiscussionContract
      */
     public function getTrashedParticipations()
     {
-        return $this->participations()->get();
+        return $this->participations()->withTrashed()->get();
     }
 
     /**
