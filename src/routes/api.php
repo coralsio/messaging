@@ -8,7 +8,7 @@ Route::controller('MessageController')->prefix('messages')->group(function () {
 });
 
 Route::post('discussions/{discussion}/mark-as-read', 'DiscussionsController@markAsRead');
-Route::get('discussions/un-read-messages', 'DiscussionsController@discussionsCountForUnReadMessages');
+Route::get('discussions/un-read-messages', 'DiscussionsController@unreadMessagesCount');
 
 Route::post('discussions/{discussion}/delete-conversation', 'DiscussionsController@deleteConversation');
 

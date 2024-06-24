@@ -40,11 +40,10 @@ class DiscussionService extends BaseServiceClass
     /**
      * @return int
      */
-    public function discussionsCountForUnReadMessages()
+    public function unreadMessagesCount(): int
     {
         return Discussion::query()
             ->forUser(user())
-            ->where('messaging_participations.unread_counts', '>', 0)
-            ->count();
+            ->sum('messaging_participations.unread_counts');
     }
 }
