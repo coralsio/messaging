@@ -44,6 +44,6 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "laravel/reverb": "@beta"
+        "laravel/reverb": "dev-main"
     }
 }
