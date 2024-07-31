@@ -107,15 +107,6 @@ class Discussion extends BaseModel implements DiscussionContract
             })->orderBy('messaging_messages.created_at', 'desc');
     }
 
-    /**
-     * Get the participable that created the first message.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function creator()
-    {
-        return User::where('id', $this->created_by)->first();
-    }
 
     /* -----------------------------------------------------------------
      |  Scopes

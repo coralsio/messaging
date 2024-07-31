@@ -53,7 +53,7 @@ class DiscussionTransformer extends BaseTransformer
             'id' => $discussion->id,
             'checkbox' => $this->addCheckbox($discussion->hashed_id),
             'icon' => $this->addIcon($status),
-            'creator' => $discussion->creator() ? '<b>' . $discussion->creator()->name . '</b>' : '',
+            'creator' => $discussion->creator ? '<b>' . $discussion->creator->name . '</b>' : '',
             'subject' => '<a href="' . $show_url . '">' . \Str::limit($discussion->subject, 50) . '</a>',
             'participations' => formatArrayAsLabels($participations, 'info'),
             'created_at' => format_date($discussion->created_at),
