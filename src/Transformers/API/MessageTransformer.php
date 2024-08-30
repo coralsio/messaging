@@ -26,7 +26,7 @@ class MessageTransformer extends APIBaseTransformer
 
         $media = $message->getMedia($message->mediaCollectionName)->map(fn(Media $m) => [
             'id' => $m->id,
-            'url' => $m->getFullUrl(),
+            'url' => getMediaPublicURL($m),
             'mime_type' => $m->mime_type,
             'file_name' => $m->file_name,
             'size' => $m->size
