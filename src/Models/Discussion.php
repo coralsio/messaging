@@ -68,6 +68,10 @@ class Discussion extends BaseModel implements DiscussionContract
             $user = user();
         }
 
+        if (!$user) {
+            return null;
+        }
+
         return $this->hasMany(Participation::class)
             ->where("participable_type", '=', $user->getMorphClass())
             ->where("participable_id", '=', $user->getKey())
@@ -79,7 +83,7 @@ class Discussion extends BaseModel implements DiscussionContract
      * @param bool $withTrashed
      * @return mixed
      */
-    public function getReceiverParticipations($user = null,bool $withTrashed = false)
+    public function getReceiverParticipations($user = null, bool $withTrashed = false)
     {
         if (is_null($user)) {
             $user = user();

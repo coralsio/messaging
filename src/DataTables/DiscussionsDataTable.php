@@ -27,11 +27,20 @@ class DiscussionsDataTable extends BaseDataTable
     }
 
     /**
-     * Get query source of dataTable.
      * @param Discussion $model
-     * @return \Illuminate\Database\Eloquent\Builder|static
+     * @param string|null $lastMessageCreatedAt
+     * @return mixed
      */
     public function query(Discussion $model, string $lastMessageCreatedAt = null)
+    {
+        return $this->baseQuery($model, $lastMessageCreatedAt)
+            ->when(!isSuperUser(), fn(Builder $q) => $q->forUser(user()))
+            ->withCount(['messages' => function (Builder $builder) {
+                $builder->where('status', '<>', 'draft');
+            }]);
+    }
+
+    protected function baseQuery(Discussion $model, $lastMessageCreatedAt = null)
     {
         $subQueryLastMessage = \Corals\Modules\Messaging\Models\Message::query()
             ->select('messaging_messages.created_at')
@@ -44,11 +53,7 @@ class DiscussionsDataTable extends BaseDataTable
             ->when($lastMessageCreatedAt, function (Builder $builder, $lastMessageCreatedAt) use ($subQueryLastMessage) {
                 $builder->selectSub($subQueryLastMessage, 'last_message')
                     ->whereRaw("({$subQueryLastMessage->toSql()}) < ?", [$lastMessageCreatedAt]);
-            })->withCount(['messages' => function (Builder $builder) {
-                $builder->where('status', '<>', 'draft');
-            }])
-            ->when(!isSuperUser(), fn(Builder $q) => $q->forUser(user()))
-            ->orderBy($subQueryLastMessage, 'desc');
+            })->orderBy($subQueryLastMessage, 'desc');
     }
 
     /**
