@@ -6,6 +6,7 @@ use Corals\Foundation\Transformers\APIBaseTransformer;
 use Corals\Modules\Messaging\Models\Discussion;
 use Corals\Modules\Messaging\Models\Message;
 use Corals\Modules\Messaging\Models\Participation;
+use Corals\User\Models\User;
 use Corals\User\Transformers\API\SimpleUserPresenter;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -32,12 +33,20 @@ class MessageTransformer extends APIBaseTransformer
             'size' => $m->size
         ])->toArray();
 
+        $sender = $message->participable;
+
+        if ($sender instanceof User) {
+            $sender = (new SimpleUserPresenter)->present($sender)['data'];
+        } else {
+            $sender = $sender->presenter();
+        }
+
 
         $transformedArray = [
             'id' => $message->id,
             'body' => $message->body,
             'discussion_id' => $message->discussion_id,
-            'sender' => (new SimpleUserPresenter)->present($message->participable)['data'],
+            'sender' => $sender,
             'created_at_for_humans' => $message->created_at->diffForHumans(short: true, syntax: true),
             'formatted_created_at' => format_date($message->created_at, 'h:i a'),
             'seen' => $seen,
