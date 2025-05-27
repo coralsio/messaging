@@ -37,7 +37,7 @@ class MessageRequest extends BaseRequest
             ]);
 
             if (is_api_request()) {
-                $rules['second_participation_id'] = 'required|exists:users,id';
+                $rules['second_participation_id'] = 'required';
             }
         }
 
