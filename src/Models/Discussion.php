@@ -36,10 +36,11 @@ class Discussion extends BaseModel implements DiscussionContract
      */
     public $config = 'messaging.models.discussion';
 
-    protected $fillable = ['subject'];
+    protected $fillable = ['subject', 'properties'];
 
     protected $casts = [
         'id' => 'integer',
+        'properties' => 'json'
     ];
 
     protected $indexContentColumns = ['messages.body'];
