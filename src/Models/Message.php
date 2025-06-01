@@ -22,7 +22,7 @@ class Message extends BaseModel implements MessageContract, HasMedia
      */
     public $config = 'messaging.models.message';
 
-    protected $fillable = ['discussion_id', 'participable_type', 'participable_id', 'body', 'status'];
+    protected $fillable = ['discussion_id', 'participable_type', 'participable_id', 'body', 'status', 'created_at'];
 
     protected $with = ['participable'];
 
