@@ -19,6 +19,7 @@ class MessagingTables extends Migration
             $table->increments('id');
 
             $table->string('subject')->nullable();
+            $table->string('thread_id')->nullable();
 
             $table->text('properties')->nullable();
 

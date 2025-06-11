@@ -38,8 +38,13 @@ class MessageService extends BaseServiceClass
 
         $participableObject = Relation::getMorphedModel($participableType)::find($participableId);
 
+        $discussionProperties = $request->get('discussion_properties');
+
+        $threadId = data_get($discussionProperties, 'thread_id');
+
         //check if they have already chatted.
         $discussion = $participableObject->discussions()
+            ->when($threadId, fn($q) => $q->where('messaging_discussions.thread_id', $threadId))
             ->whereHas(
                 'participations', fn($q) => $q->withTrashed()
                 ->where([
@@ -61,8 +66,9 @@ class MessageService extends BaseServiceClass
         $discussionData = [];
 
 
-        if ($request->filled('discussion_properties')) {
-            $discussionData['properties'] = $request->get('discussion_properties');
+        if ($discussionProperties) {
+            $discussionData['properties'] = $discussionProperties;
+            $discussionData['thread_id'] = $threadId;
         }
 
         $discussion = Discussion::query()->create($discussionData);

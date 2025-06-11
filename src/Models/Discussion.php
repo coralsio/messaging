@@ -36,7 +36,7 @@ class Discussion extends BaseModel implements DiscussionContract
      */
     public $config = 'messaging.models.discussion';
 
-    protected $fillable = ['subject', 'properties'];
+    protected $fillable = ['subject', 'properties', 'thread_id'];
 
     protected $casts = [
         'id' => 'integer',
